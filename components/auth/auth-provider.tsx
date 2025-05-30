@@ -57,16 +57,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Verificar si hay una sesión guardada al cargar
   useEffect(() => {
-    const savedUser = localStorage.getItem("crm-user")
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser))
-      } catch (error) {
-        console.error("Error parsing saved user:", error)
-        localStorage.removeItem("crm-user")
+    // Solo se ejecuta en el cliente
+    if (typeof window !== "undefined") {
+      const savedUser = localStorage.getItem("crm-user")
+      if (savedUser) {
+        try {
+          setUser(JSON.parse(savedUser))
+        } catch (error) {
+          console.error("Error parsing saved user:", error)
+          localStorage.removeItem("crm-user")
+        }
       }
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }, [])
 
   const login = async (email: string, password: string): Promise<boolean> => {
